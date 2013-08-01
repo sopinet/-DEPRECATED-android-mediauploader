@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+		<TextView
+		    android:id="@+id/sendingtext"
+		    android:layout_weight="1"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content" 
+		    android:text="Cargando..."
+		    />
+        <!-- 
+		<Button
+		    android:id="@+id/cancelall"
+		    android:layout_weight="1"		    
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:text="Cancelar todo" />
+		-->
+		<!-- 
+		<Button
+		    android:id="@+id/clearall"
+		    android:layout_weight="1"		    
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:text="Limpiar completados" />
+		-->
+    </LinearLayout>
+    <ListView
+    	android:id="@+id/list_sendingactivity"
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	></ListView>
+</LinearLayout>    

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:padding="5dp">
+	<RelativeLayout
+	    android:id="@+id/tomy"
+	    android:orientation="vertical"
+	    android:layout_width="wrap_content"
+	    android:layout_height="fill_parent"
+	    android:layout_alignParentLeft="true" 
+	    >
+		<ImageView android:id="@+id/status_icon"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="1dp"
+			android:layout_centerHorizontal="true"
+			android:layout_alignParentTop="true"
+			/>
+		<TextView
+		    android:layout_alignParentBottom="true"
+		    android:id="@+id/status_porcentage"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    />
+	</RelativeLayout>
+
+	<RelativeLayout android:layout_width="fill_parent"
+	    android:paddingLeft="4dp"
+		android:layout_height="fill_parent" android:layout_toRightOf="@id/tomy">
+
+		<TextView android:id="@+id/status_text" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_alignParentTop="true"
+			android:text="Enviando..." 
+			/>
+		<ProgressBar android:id="@+id/status_progress"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_below="@id/status_text"
+			android:progressDrawable="@android:drawable/progress_horizontal"
+			android:indeterminate="false" android:indeterminateOnly="false" />
+
+
+	</RelativeLayout>
+
+</LinearLayout>
