@@ -187,7 +187,9 @@ public class HttpPostHelper {
 				        	        }
 				        	        // Si hemos cambiado el tipo de conexión, se cancela esta subida
 				        	        if (UtilsHelper.isOnline3G(con) && MediaUploader.MODE.equals("wifi")) {
-				        	        	dbw.delete("http_index", "indice="+String.valueOf(this.indice), null);
+							        	ContentValues values = new ContentValues();
+							        	values.put("status", "savedDB");
+							        	dbw.update("http_index", values, "indice="+String.valueOf(indice), null);
 				        	        	this.cancel(true);
 				        	        	this.httpPost.abort();
 				        	        	notificationManager.cancel(indice);	
@@ -207,7 +209,7 @@ public class HttpPostHelper {
 					        } else {
 					        	ContentValues valuesf = new ContentValues();
 					        	valuesf.put("status", "savedDB");
-					        	db.update("http_index", values, "indice="+String.valueOf(indice), null);
+					        	db.update("http_index", valuesf, "indice="+String.valueOf(indice), null);
 								WindowsHelper.showMessage(con, UtilsHelper.isOnlineTEXT(con));							        	
 					        }					        	
       	        	  
