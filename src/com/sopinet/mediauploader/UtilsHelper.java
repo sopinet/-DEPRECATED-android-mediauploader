@@ -22,6 +22,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 public class UtilsHelper
 {
@@ -104,15 +105,52 @@ public class UtilsHelper
       ConnectivityManager cm = (ConnectivityManager) act.getSystemService(Context.CONNECTIVITY_SERVICE);
       NetworkInfo ni = cm.getActiveNetworkInfo();
       if (ni!=null && ni.isAvailable() && ni.isConnected()) {
-          return true;
+    	  if (MediaUploader.MODE.equals("wifi")) {
+    		  if (UtilsHelper.isOnlineWifi(act)) {
+    			  return true;
+    		  } else {
+    			  return false;
+    		  }
+    	  } else {
+    		  return true;
+    	  }
       } else {
           return false; 
       }
-  }	
+  }
   public static boolean isOnline(Activity act) {
   	Context con = act.getApplicationContext();
   	return isOnline(con);
-  }  
+  }
+  
+  public static boolean isOnline3G(Context act) {
+	ConnectivityManager manager = (ConnectivityManager) act.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+	//For 3G check
+	boolean is3g = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+	            .isConnectedOrConnecting();
+	
+	return is3g;
+  }
+  
+  public static String isOnlineTEXT(Context act) {
+	  //Log.d("TEMA", MediaUploader.MODE);
+	  if (UtilsHelper.isOnline3G(act) && MediaUploader.MODE.equals("wifi")) {
+		  return "La subida se efectuará automáticamente cuando disponga de conexión Wifi.";
+	  } else {
+		  return "No hay conexión a Internet, se enviará cuando la haya.";
+	  }
+  }
+  
+  public static boolean isOnlineWifi(Context act) {
+	ConnectivityManager manager = (ConnectivityManager) act.getSystemService(Context.CONNECTIVITY_SERVICE);
+	
+	//For WiFi Check
+	boolean isWifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+	            .isConnectedOrConnecting();
+	
+	return isWifi;
+  }
   
   public static String getRealPathFromURI(Activity act, Uri contentUri) {
 	    if (contentUri.toString().substring(0, 7).equals("file://")) {

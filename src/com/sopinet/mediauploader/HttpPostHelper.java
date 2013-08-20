@@ -35,7 +35,7 @@ public class HttpPostHelper {
 	        notification.contentView.setTextViewText(R.id.status_porcentage, "0%");
 	        notification.contentView.setProgressBar(R.id.status_progress, 100, 0, false);	        
 		} else if (state.equals("nonetwork")) {
-			texto = "No hay conexión a Internet, se volverá a enviar cuando la haya.";
+			texto = UtilsHelper.isOnlineTEXT(act);
 			notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 	        notification.contentView.setImageViewResource(R.id.status_icon, android.R.drawable.presence_offline);
 	        notification.contentView.setTextViewText(R.id.status_porcentage, "0%");
@@ -47,7 +47,7 @@ public class HttpPostHelper {
 	        notification.contentView.setTextViewText(R.id.status_porcentage, "100%");
 	        notification.contentView.setProgressBar(R.id.status_progress, 100, 100, false);	        
 		} else if (state.equals("error")) {
-			texto = "No hay conexión a Internet, se volverá a enviar cuando la haya.";
+			texto = UtilsHelper.isOnlineTEXT(act);
 			notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 	        notification.contentView.setImageViewResource(R.id.status_icon, android.R.drawable.presence_busy);
 	        notification.contentView.setTextViewText(R.id.status_porcentage, "0%");
@@ -68,7 +68,7 @@ public class HttpPostHelper {
         	String[] args = new String[] {"savedDB"};
         	Cursor c = db.rawQuery(" SELECT indice FROM http_index WHERE status=? ", args);
         	if (c.moveToFirst()) {
-        		WindowsHelper.showMessage(con, "No hay conexión a Internet, se enviará cuando la haya.");
+        		WindowsHelper.showMessage(con, UtilsHelper.isOnlineTEXT(con));
         	}
         	c.close();
         	args = new String[] {"sending"};		
@@ -183,8 +183,15 @@ public class HttpPostHelper {
 				        	        } else {
 				        	        	this.cancel(true);
 				        	        	this.httpPost.abort();
-				        	        	notificationManager.cancel(indice);	
+				        	        	notificationManager.cancel(indice);
 				        	        }
+				        	        // Si hemos cambiado el tipo de conexión, se cancela esta subida
+				        	        if (UtilsHelper.isOnline3G(con) && MediaUploader.MODE.equals("wifi")) {
+				        	        	dbw.delete("http_index", "indice="+String.valueOf(this.indice), null);
+				        	        	this.cancel(true);
+				        	        	this.httpPost.abort();
+				        	        	notificationManager.cancel(indice);	
+				        	        }				        	        
 				        	        d.close();
 								}								
 							};   
@@ -201,7 +208,7 @@ public class HttpPostHelper {
 					        	ContentValues valuesf = new ContentValues();
 					        	valuesf.put("status", "savedDB");
 					        	db.update("http_index", values, "indice="+String.valueOf(indice), null);
-								WindowsHelper.showMessage(con, "No hay conexión a Internet, se enviará cuando la haya.");							        	
+								WindowsHelper.showMessage(con, UtilsHelper.isOnlineTEXT(con));							        	
 					        }					        	
       	        	  
         	          }

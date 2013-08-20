@@ -13,6 +13,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
+import com.sopinet.mediauploader.HttpPostMime;
 import com.sopinet.mediauploader.HttpPostMime.ProgressListener;
 
 import android.app.ProgressDialog;
