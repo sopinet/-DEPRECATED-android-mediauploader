@@ -26,7 +26,7 @@ public class HttpPostHelper {
                 .currentTimeMillis());
     	notification.contentView = new RemoteViews(act.getApplicationContext().getPackageName(), R.layout.download_progress);
 		PendingIntent contentIntent = PendingIntent.getActivity(act, 0, localIntent, 0);
-        notification.contentIntent = contentIntent;		
+        notification.contentIntent = contentIntent;
 		String texto = null;
 		if (state.equals("sending")) {
 			texto = "Enviando...";
@@ -210,7 +210,7 @@ public class HttpPostHelper {
 					        	ContentValues valuesf = new ContentValues();
 					        	valuesf.put("status", "savedDB");
 					        	db.update("http_index", valuesf, "indice="+String.valueOf(indice), null);
-								WindowsHelper.showMessage(con, UtilsHelper.isOnlineTEXT(con));							        	
+								WindowsHelper.showMessage(con, UtilsHelper.isOnlineTEXT(con));			        	
 					        }					        	
       	        	  
         	          }
