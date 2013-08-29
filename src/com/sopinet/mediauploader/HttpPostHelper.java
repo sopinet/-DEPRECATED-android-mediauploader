@@ -225,7 +225,7 @@ public class HttpPostHelper {
         //usdbh.close();
 		return null;
 	}
-	public static String send (final Activity act, final String data[], final Intent localIntent) {
+	public static String send (final Activity act, final String data[]) {
 		HttpPostSQL usdbh = HttpPostSQL.getInstance(act);
 		SQLiteDatabase db = usdbh.getWritable();
 		
@@ -278,12 +278,8 @@ public class HttpPostHelper {
             //db.close();
         }		
         
-        //usdbh.close();
-        
         Intent toggleIntent = new Intent(act, ChangeConnectivity.class);
         act.sendBroadcast(toggleIntent);
-
-//        execNotify(act, localIntent);
         
 		return null;
 	}
