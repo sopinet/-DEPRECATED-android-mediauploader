@@ -22,6 +22,10 @@ public class HttpPostHelper {
 	public static NotificationManager notificationManager = null;
 	
 	private static void initNotify(int indice, String state, Context act, Intent localIntent) {
+		initNotify(indice, state, act, localIntent, "");
+	}
+	
+	private static void initNotify(int indice, String state, Context act, Intent localIntent, String adderror) {
     	notification = new Notification(R.drawable.upload, "Espere...", System
                 .currentTimeMillis());
     	notification.contentView = new RemoteViews(act.getApplicationContext().getPackageName(), R.layout.download_progress);
@@ -58,6 +62,9 @@ public class HttpPostHelper {
                 act.getApplicationContext().NOTIFICATION_SERVICE);
         notificationManager.notify(indice, notification);
         WindowsHelper.showMessage(act, texto);
+        if (state.equals("error") && !MediaUploader.RES_VIEWERROR.equals("")) {
+        	WindowsHelper.showMessage(act, adderror);
+        }
 	}
 	
 	public static String cancelNotify(final Context con, final Intent localIntent) {
@@ -138,7 +145,12 @@ public class HttpPostHelper {
 							    			//db.close();
 							    		}
 							    		//usdbh.close();
-							            initNotify(this.indice, "ok", con, localIntent);
+							    		Log.d("TEMA", result);
+							    		if (MediaUploader.RES_OK != null || result.equals(MediaUploader.RES_OK)) {
+							    			initNotify(this.indice, "ok", con, localIntent);
+							    		} else {
+							    			initNotify(this.indice, "error", con, localIntent, result);
+							    		}
 									} else {
 								        ContentValues values = new ContentValues();
 							            values.put("status", "savedDB");
@@ -264,6 +276,8 @@ public class HttpPostHelper {
         	
             for(int i=0; i < data2.length; i = i+2)
             {
+            	Log.d("TEMA", "KEY: " + data2[i]);
+            	Log.d("TEMA", "VALUE: " + data2[i+1]);            	
             	valuesData.put("indice", String.valueOf(row_id));
             	valuesData.put("key", data2[i]);
             	valuesData.put("value", data2[i+1]);
