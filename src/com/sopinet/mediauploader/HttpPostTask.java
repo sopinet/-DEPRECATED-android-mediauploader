@@ -57,7 +57,7 @@ public class HttpPostTask extends AsyncTask<String, Integer, String>
 								File file = new File(arg0[i+1]);
 								// ContentBody cbFile = new FileBody(file, "video/mp4");
 								ContentBody cbFile = new FileBody(file);
-								multipartContent.addPart(arg0[i], cbFile);								
+								multipartContent.addPart(arg0[i].substring(5), cbFile);								
 							} else {
 								multipartContent.addPart(arg0[i], new StringBody(arg0[i+1]));
 							}

@@ -57,7 +57,11 @@ public class HttpPostHelper {
 	        notification.contentView.setTextViewText(R.id.status_porcentage, "0%");
 	        notification.contentView.setProgressBar(R.id.status_progress, 100, 0, false);			
 		}
-        notification.contentView.setTextViewText(R.id.status_text, texto);
+		if (adderror != "") {
+			notification.contentView.setTextViewText(R.id.status_text, "Ha ocurrido un error, no se ha podido procesar su envío.");
+		} else {
+			notification.contentView.setTextViewText(R.id.status_text, texto);
+		}
         notificationManager = (NotificationManager) act.getApplicationContext().getSystemService(
                 act.getApplicationContext().NOTIFICATION_SERVICE);
         notificationManager.notify(indice, notification);
