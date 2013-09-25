@@ -57,17 +57,23 @@ public class HttpPostHelper {
 	        notification.contentView.setTextViewText(R.id.status_porcentage, "0%");
 	        notification.contentView.setProgressBar(R.id.status_progress, 100, 0, false);			
 		}
+		String texto_error = "Ha ocurrido un error, no se ha podido procesar su envío.";
 		if (adderror != "") {
-			notification.contentView.setTextViewText(R.id.status_text, "Ha ocurrido un error, no se ha podido procesar su envío.");
+			notification.contentView.setTextViewText(R.id.status_text, texto_error);
 		} else {
 			notification.contentView.setTextViewText(R.id.status_text, texto);
 		}
         notificationManager = (NotificationManager) act.getApplicationContext().getSystemService(
                 act.getApplicationContext().NOTIFICATION_SERVICE);
         notificationManager.notify(indice, notification);
-        WindowsHelper.showMessage(act, texto);
-        if (state.equals("error") && !MediaUploader.RES_VIEWERROR.equals("")) {
-        	WindowsHelper.showMessage(act, adderror);
+        if (state.equals("error")) {
+        	if (adderror != "" && MediaUploader.RES_VIEWERROR == true) {
+        		WindowsHelper.showMessage(act, adderror);
+        	} else {
+        		WindowsHelper.showMessage(act, texto_error);
+        	}
+        } else {
+        	WindowsHelper.showMessage(act, texto);	
         }
 	}
 	
@@ -149,8 +155,7 @@ public class HttpPostHelper {
 							    			//db.close();
 							    		}
 							    		//usdbh.close();
-							    		Log.d("TEMA", result);
-							    		if (MediaUploader.RES_OK != null || result.equals(MediaUploader.RES_OK)) {
+							    		if (MediaUploader.RES_OK == null || result.equals(MediaUploader.RES_OK)) {
 							    			initNotify(this.indice, "ok", con, localIntent);
 							    		} else {
 							    			initNotify(this.indice, "error", con, localIntent, result);
