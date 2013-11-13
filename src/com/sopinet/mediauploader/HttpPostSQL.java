@@ -12,10 +12,10 @@ public class HttpPostSQL extends SQLiteOpenHelper {
 	private SQLiteDatabase iWritable = null;
 	private Context mCxt;
 	private static final String DATABASE_NAME = "DBHttpPost";
-	private static final int DATABASE_VERSION = 5;
+	private static final int DATABASE_VERSION = 6;
 	
     //Sentencia SQL para crear la tabla de Usuarios
-    String sqlCreate = "CREATE TABLE http_index (indice INTEGER PRIMARY KEY AUTOINCREMENT, status TEXT, porcentage INTEGER)";
+    String sqlCreate = "CREATE TABLE http_index (indice INTEGER PRIMARY KEY AUTOINCREMENT, status TEXT, porcentage INTEGER, item TEXT)";
     String sqlCreate2 = "CREATE TABLE http_string (indice INTEGER, key TEXT, value TEXT)";
  
     public static HttpPostSQL getInstance(Context ctx) {

@@ -127,6 +127,7 @@ public class UtilsHelper
 	ConnectivityManager manager = (ConnectivityManager) act.getSystemService(Context.CONNECTIVITY_SERVICE);
 
 	//For 3G check
+	if (manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE) == null) return false;
 	boolean is3g = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
 	            .isConnectedOrConnecting();
 	

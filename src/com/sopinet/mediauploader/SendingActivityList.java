@@ -14,7 +14,7 @@ import android.widget.TextView;
 	public class SendingActivityList extends ArrayAdapter {
 
  	static class ViewHolder {
- 	    public TextView name;
+ 	    public TextView item;
 		private TextView porcentage;
 		private ProgressBar progressbar;
  	}    	
@@ -39,12 +39,13 @@ import android.widget.TextView;
 		    if(item == null)
 		    {
 		        LayoutInflater inflater = context.getLayoutInflater();
-		        //item = inflater.inflate(R.layout.sendingactivity_item, null);
+		        //item = inflater.inflate(R.layout.sendingactinamevity_item, null);
 		        item = inflater.inflate(R.layout.sendingactivity_item, null);
 		 
 		        holder = new ViewHolder();
 		        holder.porcentage = (TextView)item.findViewById(R.id.status_porcentage);
 		        holder.progressbar = (ProgressBar)item.findViewById(R.id.status_progress);
+		        holder.item = (TextView)item.findViewById(R.id.status_text);
 		        //holder.thumb = (ImageView)item.findViewById(R.id.gamoreIMAGE);
 		 
 		        item.setTag(holder);
@@ -56,6 +57,7 @@ import android.widget.TextView;
 		    String porc = data[position].porcentage.toString();
 		    //data[position].porcentage.toString()
 		    holder.porcentage.setText(porc + "%");
+		    holder.item.setText(data[position].item);
 		    holder.progressbar.setProgress(data[position].porcentage);
 		    //holder.name.setText(porc);
 		 

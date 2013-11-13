@@ -12,60 +12,121 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.sopinet.mediauploader.*;
-
 public class HttpPostHelper {
-	public static Notification notification = null;
+	//public static Notification notification = null;
 	public static NotificationManager notificationManager = null;
+	public static NotificationCompat.Builder mBuilder = null;
 	
-	private static void initNotify(int indice, String state, Context act, Intent localIntent) {
-		initNotify(indice, state, act, localIntent, "");
+	private static void initNotify(int indice, String item, String state, Context act, Intent localIntent) {
+		initNotify(indice, item, state, act, localIntent, "");
 	}
 	
-	private static void initNotify(int indice, String state, Context act, Intent localIntent, String adderror) {
+	private static void initNotify(int indice, String item, String state, Context act, Intent localIntent, String adderror) {
+		mBuilder = new NotificationCompat.Builder(act);
+		/*
+		        .setSmallIcon(R.drawable.ic_launcher)
+		        .setContentTitle("Default text")
+		        .setContentText("Default text content: " + item);
+		        */		
+		
+		/*
     	notification = new Notification(R.drawable.upload, "Espere...", System
                 .currentTimeMillis());
+        
     	notification.contentView = new RemoteViews(act.getApplicationContext().getPackageName(), R.layout.download_progress);
 		PendingIntent contentIntent = PendingIntent.getActivity(act, 0, localIntent, 0);
         notification.contentIntent = contentIntent;
+        */
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(act);
+		Class<?> cls = null;
+		try {
+			cls = Class.forName(MediaUploader.SENDINGCLASS);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		stackBuilder.addParentStack(cls);
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(localIntent);
+		PendingIntent resultPendingIntent =
+		        stackBuilder.getPendingIntent(
+		            0,
+		            PendingIntent.FLAG_UPDATE_CURRENT
+		        );
+		mBuilder.setContentIntent(resultPendingIntent);		
+		
+		
 		String texto = null;
 		if (state.equals("sending")) {
 			texto = "Enviando...";
+			mBuilder.setSmallIcon(android.R.drawable.presence_away);
+			mBuilder.setNumber(0);
+			mBuilder.setProgress(100, 0, false);
+			mBuilder.setContentText(item);
+			/*
 			notification.flags = notification.flags | Notification.FLAG_ONGOING_EVENT;
 	        notification.contentView.setImageViewResource(R.id.status_icon, android.R.drawable.presence_away);
 	        notification.contentView.setTextViewText(R.id.status_porcentage, "0%");
-	        notification.contentView.setProgressBar(R.id.status_progress, 100, 0, false);	        
+	        notification.contentView.setProgressBar(R.id.status_progress, 100, 0, false);
+	        */	        
 		} else if (state.equals("nonetwork")) {
 			texto = UtilsHelper.isOnlineTEXT(act);
+			mBuilder.setSmallIcon(android.R.drawable.presence_offline);
+			mBuilder.setNumber(100);
+			mBuilder.setProgress(100, 0, false);
+			mBuilder.setContentText(item);
+			/*
 			notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 	        notification.contentView.setImageViewResource(R.id.status_icon, android.R.drawable.presence_offline);
 	        notification.contentView.setTextViewText(R.id.status_porcentage, "0%");
-	        notification.contentView.setProgressBar(R.id.status_progress, 100, 0, false);	        
+	        notification.contentView.setProgressBar(R.id.status_progress, 100, 0, false);
+	        */	        
 		} else if (state.equals("ok")) {
 			texto = "Envío realizado con éxito.";
+			mBuilder.setSmallIcon(android.R.drawable.presence_online);
+			mBuilder.setNumber(100);
+			mBuilder.setProgress(100, 100, false);
+			mBuilder.setContentText(item);
+			/*
 			notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 	        notification.contentView.setImageViewResource(R.id.status_icon, android.R.drawable.presence_online);
 	        notification.contentView.setTextViewText(R.id.status_porcentage, "100%");
-	        notification.contentView.setProgressBar(R.id.status_progress, 100, 100, false);	        
+	        notification.contentView.setProgressBar(R.id.status_progress, 100, 100, false);
+	        */	        
 		} else if (state.equals("error")) {
 			texto = UtilsHelper.isOnlineTEXT(act);
+			mBuilder.setSmallIcon(android.R.drawable.presence_busy);
+			mBuilder.setNumber(100);
+			mBuilder.setProgress(100, 0, false);
+			mBuilder.setContentText(item);
+			/*
 			notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 	        notification.contentView.setImageViewResource(R.id.status_icon, android.R.drawable.presence_busy);
 	        notification.contentView.setTextViewText(R.id.status_porcentage, "0%");
-	        notification.contentView.setProgressBar(R.id.status_progress, 100, 0, false);			
+	        notification.contentView.setProgressBar(R.id.status_progress, 100, 0, false);
+	        */			
 		}
 		String texto_error = "Ha ocurrido un error, no se ha podido procesar su envío.";
 		if (adderror != "") {
-			notification.contentView.setTextViewText(R.id.status_text, texto_error);
+			mBuilder.setContentTitle(texto_error);
+			//notification.contentView.setTextViewText(R.id.status_text, texto_error);
 		} else {
-			notification.contentView.setTextViewText(R.id.status_text, texto);
+			mBuilder.setContentTitle(texto);
+			//notification.contentView.setTextViewText(R.id.status_text, texto);
 		}
+		/*
         notificationManager = (NotificationManager) act.getApplicationContext().getSystemService(
                 act.getApplicationContext().NOTIFICATION_SERVICE);
         notificationManager.notify(indice, notification);
+        */
+		notificationManager = (NotificationManager) act.getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.notify(indice, mBuilder.build());
+		
         if (state.equals("error")) {
         	if (adderror != "" && MediaUploader.RES_VIEWERROR == true) {
         		WindowsHelper.showMessage(act, adderror);
@@ -83,19 +144,20 @@ public class HttpPostHelper {
         if(db != null)
         {
         	String[] args = new String[] {"savedDB"};
-        	Cursor c = db.rawQuery(" SELECT indice FROM http_index WHERE status=? ", args);
+        	Cursor c = db.rawQuery(" SELECT indice, item FROM http_index WHERE status=? ", args);
         	if (c.moveToFirst()) {
         		WindowsHelper.showMessage(con, UtilsHelper.isOnlineTEXT(con));
         	}
         	c.close();
         	args = new String[] {"sending"};		
-        	c = db.rawQuery(" SELECT indice FROM http_index WHERE status=? ", args);
+        	c = db.rawQuery(" SELECT indice, item FROM http_index WHERE status=? ", args);
         	//Nos aseguramos de que existe al menos un registro
         	if (c.moveToFirst()) {
 				//Recorremos el cursor hasta que no haya más registros
 				do {
 				    String indice = c.getString(0);
-				    initNotify(Integer.parseInt(indice), "nonetwork", con, localIntent);
+				    String item = c.getString(1);
+				    initNotify(Integer.parseInt(indice), item, "nonetwork", con, localIntent);
 			        ContentValues values = new ContentValues();
 		            values.put("status", "savedDB");
 		            db.update("http_index", values, "indice="+String.valueOf(indice), null);				     
@@ -115,12 +177,13 @@ public class HttpPostHelper {
         if(db != null)
         {
         	String[] args = new String[] {"savedDB"};
-        	Cursor c = db.rawQuery(" SELECT indice FROM http_index WHERE status=? ", args);
+        	Cursor c = db.rawQuery(" SELECT indice, item FROM http_index WHERE status=? ", args);
         	//Nos aseguramos de que existe al menos un registro
         	if (c.moveToFirst()) {        		
         	     //Recorremos el cursor hasta que no haya más registros
         	     do {
         	          String indice = c.getString(0);
+        	          String item = c.getString(1);
              		 // Especificamos que vamos a empezar
      	        	 ContentValues values = new ContentValues();
      	        	 values.put("status", "sending");
@@ -141,7 +204,7 @@ public class HttpPostHelper {
 							HttpPostTask task = new HttpPostTask(){
 							    @Override
 							    protected void onPreExecute() {
-							    	initNotify(this.indice, "sending", con, localIntent);
+							    	initNotify(this.indice, this.item, "sending", con, localIntent);
 							    }
 								@Override
 								protected void onPostExecute(String result) {
@@ -156,9 +219,9 @@ public class HttpPostHelper {
 							    		}
 							    		//usdbh.close();
 							    		if (MediaUploader.RES_OK == null || result.equals(MediaUploader.RES_OK)) {
-							    			initNotify(this.indice, "ok", con, localIntent);
+							    			initNotify(this.indice, this.item, "ok", con, localIntent);
 							    		} else {
-							    			initNotify(this.indice, "error", con, localIntent, result);
+							    			initNotify(this.indice, this.item, "error", con, localIntent, result);
 							    		}
 									} else {
 								        ContentValues values = new ContentValues();
@@ -170,7 +233,7 @@ public class HttpPostHelper {
 							    			//db.close();
 							    		}
 							    		//usdbh.close();
-							            initNotify(this.indice, "error", con, localIntent);
+							            initNotify(this.indice, this.item, "error", con, localIntent);
 									}
 							        Intent toggleIntent = new Intent(con, ChangeConnectivity.class);
 							        con.sendBroadcast(toggleIntent);
@@ -187,11 +250,14 @@ public class HttpPostHelper {
 				        	        if (d.moveToFirst()) {
 										int prog = (int) (progress[0]);
 										this.timer++;
-										if ((this.timer % 30) == 0) {
+										if ((this.timer % 5) == 0) {
 											// Save barprogress UI
-											notification.contentView.setTextViewText(R.id.status_porcentage, String.valueOf(prog)+"%");
-											notification.contentView.setProgressBar(R.id.status_progress, 100, prog, false);
-											notificationManager.notify(this.indice, notification);
+											mBuilder.setContentText(this.item);
+											mBuilder.setProgress(100, prog, false);
+											mBuilder.setNumber(prog);
+											//notification.contentView.setTextViewText(R.id.status_porcentage, String.valueOf(prog)+"%");
+											//notification.contentView.setProgressBar(R.id.status_progress, 100, prog, false);
+											notificationManager.notify(this.indice, mBuilder.build());
 											// Save database porcentage
 								    		ContentValues values = new ContentValues();
 								    		values.put("porcentage", prog);
@@ -219,13 +285,9 @@ public class HttpPostHelper {
 								}								
 							};   
 					        if (UtilsHelper.isOnline(con)) {
-/*<<<<<<< HttpPostHelper.java
-					        	ContentValues values2 = new ContentValues();
-					        	values2.put("status", "sending");
-					        	db.update("http_index", values2, "indice="+String.valueOf(indice), null);
-=======
->>>>>>> 1.4*/
+					        	// Asignamos al TASK el indice y el item
 								task.indice = Integer.valueOf(indice);
+								task.item = item;
 								task.execute(data);  					        	
 					        } else {
 					        	ContentValues valuesf = new ContentValues();
@@ -246,16 +308,18 @@ public class HttpPostHelper {
         //usdbh.close();
 		return null;
 	}
-	public static String send (final Activity act, final String data[]) {
-		HttpPostSQL usdbh = HttpPostSQL.getInstance(act);
+	
+	public static String send(final Context con, final String data[]) {
+		return send(con, data, "Nombre de su item");
+	}
+	
+	public static String send (final Context con, final String data[], String item) {
+		HttpPostSQL usdbh = HttpPostSQL.getInstance(con);
 		SQLiteDatabase db = usdbh.getWritable();
 		
         //Si hemos abierto correctamente la base de datos
         if(db != null)
-        {
-            /*db.execSQL("INSERT INTO httpIndex (indice) " +
-                    "VALUES ()");*/
-            
+        {   
             ContentValues values = new ContentValues();
             values.put("status", "savingDB");
             long row_id = db.insert("http_index", null, values);
@@ -263,7 +327,7 @@ public class HttpPostHelper {
         	ContentValues valuesData = new ContentValues();
         	
         	String data2[] = null;
-    		SharedPreferences localSharedPreferences = act.getSharedPreferences("user", 0);
+    		SharedPreferences localSharedPreferences = con.getSharedPreferences("user", 0);
     		if (localSharedPreferences != null) {
 	    		String email = localSharedPreferences.getString("email", "");
 	    		String password = localSharedPreferences.getString("password", "");
@@ -294,6 +358,7 @@ public class HttpPostHelper {
             }
             
             values = new ContentValues();
+            values.put("item", item);
             values.put("status", "savedDB");
             db.update("http_index", values, "indice="+String.valueOf(row_id), null);
  
@@ -301,8 +366,8 @@ public class HttpPostHelper {
             //db.close();
         }		
         
-        Intent toggleIntent = new Intent(act, ChangeConnectivity.class);
-        act.sendBroadcast(toggleIntent);
+        Intent toggleIntent = new Intent(con, ChangeConnectivity.class);
+        con.sendBroadcast(toggleIntent);
         
 		return null;
 	}

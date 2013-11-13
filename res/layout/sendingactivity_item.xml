@@ -28,8 +28,11 @@
 	    android:paddingLeft="4dp"
 		android:layout_height="fill_parent" android:layout_toRightOf="@id/tomy">
 
-		<TextView android:id="@+id/status_text" android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:layout_alignParentTop="true"
+		<TextView 
+		    android:id="@+id/status_text" 
+		    android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_alignParentTop="true"
 			android:text="Enviando..." 
 			/>
 		<ProgressBar android:id="@+id/status_progress"

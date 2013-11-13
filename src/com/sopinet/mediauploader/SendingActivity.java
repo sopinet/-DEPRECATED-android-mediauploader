@@ -53,7 +53,7 @@ public class SendingActivity extends Activity {
 		if (dbr != null) {
         	//String[] args = new String[] {"sending"};
         	//Cursor c = db.rawQuery("SELECT indice, porcentage FROM http_index WHERE status=? ", args);
-			Cursor c = dbr.rawQuery("SELECT indice, porcentage FROM http_index", null);
+			Cursor c = dbr.rawQuery("SELECT indice, status, porcentage, item FROM http_index", null);
         	dataBarArray = new DataBar[c.getCount()];
         	
         	// Update information text
@@ -78,14 +78,14 @@ public class SendingActivity extends Activity {
        	     do {
        	    	 dataBarArray[i] = new DataBar();
        	    	 dataBarArray[i].indice = c.getString(0);
-       	    	 dataBarArray[i].name = c.getString(0);
        	    	 // TODO: Check NULL
        	    	 try {
-       	    		 dataBarArray[i].porcentage = Integer.valueOf(c.getString(1));
+       	    		 dataBarArray[i].porcentage = Integer.valueOf(c.getString(2));
        	    	 } catch(Exception e) {
        	    		 dataBarArray[i].porcentage = 0;
        	    		 // Is null
        	    	 }
+       	    	 dataBarArray[i].item = c.getString(3);
        	    	 i++;
        	     } while (c.moveToNext());
         	}

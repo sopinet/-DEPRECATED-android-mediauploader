@@ -79,7 +79,7 @@ public class SendingListView extends ListView
 		if (dbr != null) {
         	//String[] args = new String[] {"sending"};
         	//Cursor c = db.rawQuery("SELECT indice, porcentage FROM http_index WHERE status=? ", args);
-			Cursor c = dbr.rawQuery("SELECT indice, porcentage FROM http_index", null);
+			Cursor c = dbr.rawQuery("SELECT indice, status, porcentage, item FROM http_index", null);
         	dataBarArray = new DataBar[c.getCount()];
         	
         	// Update information text
@@ -88,7 +88,7 @@ public class SendingListView extends ListView
         	final int count = c.getCount();
         	((Activity)context).runOnUiThread(new Runnable() {
                 @Override
-                public void run() {        	
+                public void run() {
                 	if (count == 0) {
                     	sendingText.setText("No hay ninguna subida realizándose.");
                     } else if (count == 1){
@@ -106,10 +106,10 @@ public class SendingListView extends ListView
        	     do {
        	    	 dataBarArray[i] = new DataBar();
        	    	 dataBarArray[i].indice = c.getString(0);
-       	    	 dataBarArray[i].name = c.getString(0);
+       	    	 dataBarArray[i].item = c.getString(3);
        	    	 // TODO: Check NULL
        	    	 try {
-       	    		 dataBarArray[i].porcentage = Integer.valueOf(c.getString(1));
+       	    		 dataBarArray[i].porcentage = Integer.valueOf(c.getString(2));
        	    	 } catch(Exception e) {
        	    		 dataBarArray[i].porcentage = 0;
        	    		 // Is null

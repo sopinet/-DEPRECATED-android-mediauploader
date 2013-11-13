@@ -18,7 +18,6 @@ import com.sopinet.mediauploader.HttpPostMime.ProgressListener;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.util.Log;
 
 public class HttpPostTask extends AsyncTask<String, Integer, String>
 	{
@@ -27,6 +26,7 @@ public class HttpPostTask extends AsyncTask<String, Integer, String>
 		long totalSize;
 		int indice;
 		int timer = 0;
+		String item;
  
 		@Override
 		protected String doInBackground(String... arg0)
