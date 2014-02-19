@@ -1,6 +1,7 @@
 package com.sopinet.mediauploader;
 
 import com.sopinet.mediauploader.ChangeConnectivity;
+import com.sopinet.utils.CheckParser;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -63,8 +64,8 @@ public class HttpPostHelper {
 		
 		String texto = null;
 		if (state.equals("sending")) {
-			texto = "Enviando...";
-			mBuilder.setSmallIcon(android.R.drawable.presence_away);
+			texto = act.getResources().getString(MediaUploader.TEXT_SENDING);
+			mBuilder.setSmallIcon(MediaUploader.ICON_BLUE);
 			mBuilder.setNumber(0);
 			mBuilder.setProgress(100, 0, false);
 			mBuilder.setContentText(item);
@@ -76,7 +77,7 @@ public class HttpPostHelper {
 	        */	        
 		} else if (state.equals("nonetwork")) {
 			texto = UtilsHelper.isOnlineTEXT(act);
-			mBuilder.setSmallIcon(android.R.drawable.presence_offline);
+			mBuilder.setSmallIcon(MediaUploader.ICON_YELLOW);
 			mBuilder.setNumber(100);
 			mBuilder.setProgress(100, 0, false);
 			mBuilder.setContentText(item);
@@ -87,8 +88,8 @@ public class HttpPostHelper {
 	        notification.contentView.setProgressBar(R.id.status_progress, 100, 0, false);
 	        */	        
 		} else if (state.equals("ok")) {
-			texto = "Envío realizado con éxito.";
-			mBuilder.setSmallIcon(android.R.drawable.presence_online);
+			texto = act.getResources().getString(MediaUploader.TEXT_SENDOK);
+			mBuilder.setSmallIcon(MediaUploader.ICON_GREEN);
 			mBuilder.setNumber(100);
 			mBuilder.setProgress(100, 100, false);
 			mBuilder.setContentText(item);
@@ -100,7 +101,7 @@ public class HttpPostHelper {
 	        */	        
 		} else if (state.equals("error")) {
 			texto = UtilsHelper.isOnlineTEXT(act);
-			mBuilder.setSmallIcon(android.R.drawable.presence_busy);
+			mBuilder.setSmallIcon(MediaUploader.ICON_RED);
 			mBuilder.setNumber(100);
 			mBuilder.setProgress(100, 0, false);
 			mBuilder.setContentText(item);
@@ -111,7 +112,7 @@ public class HttpPostHelper {
 	        notification.contentView.setProgressBar(R.id.status_progress, 100, 0, false);
 	        */			
 		}
-		String texto_error = "Ha ocurrido un error, no se ha podido procesar su envío.";
+		String texto_error = act.getResources().getString(MediaUploader.TEXT_SENDERROR);
 		if (adderror != "") {
 			mBuilder.setContentTitle(texto_error);
 			//notification.contentView.setTextViewText(R.id.status_text, texto_error);
@@ -218,10 +219,21 @@ public class HttpPostHelper {
 							    			//db.close();
 							    		}
 							    		//usdbh.close();
-							    		if (MediaUploader.RES_OK == null || result.equals(MediaUploader.RES_OK)) {
-							    			initNotify(this.indice, this.item, "ok", con, localIntent);
+							    		// Resultado devuelto del POST por JSON
+							    		if (MediaUploader.RES_OK.equals("json")) {
+							    			CheckParser check = new CheckParser();
+							    			if (result != null && check.parse(result)) {
+							    				initNotify(this.indice, this.item, "ok", con, localIntent);
+							    			} else {
+							    				initNotify(this.indice, this.item, "error", con, localIntent, result);
+							    			}
+							    		// Resultado devuelto del POST por STRING
 							    		} else {
-							    			initNotify(this.indice, this.item, "error", con, localIntent, result);
+								    		if (MediaUploader.RES_OK == null || result.equals(MediaUploader.RES_OK)) {
+								    			initNotify(this.indice, this.item, "ok", con, localIntent);
+								    		} else {
+								    			initNotify(this.indice, this.item, "error", con, localIntent, result);
+								    		}
 							    		}
 									} else {
 								        ContentValues values = new ContentValues();
@@ -326,34 +338,13 @@ public class HttpPostHelper {
 
         	ContentValues valuesData = new ContentValues();
         	
-        	String data2[] = null;
-    		SharedPreferences localSharedPreferences = con.getSharedPreferences("user", 0);
-    		if (localSharedPreferences != null) {
-	    		String email = localSharedPreferences.getString("email", "");
-	    		String password = localSharedPreferences.getString("password", "");
-	    		int longitud = data.length + 4;
-	    		data2 = new String[longitud];
-	    		data2[0] = "email";
-	    		data2[1] = email;
-	    		data2[2] = "password";
-	    		data2[3] = password;
-	    		for(int i = 0; i < data.length; i++) {
-	    			data2[i+4] = data[i];
-	    		}
-    		} else {
-    			data2 = new String[data.length];
-	    		for(int i = 0; i < data.length; i++) {
-	    			data2[i] = data[i];
-	    		}    			
-    		}
-        	
-            for(int i=0; i < data2.length; i = i+2)
+            for(int i=0; i < data.length; i = i+2)
             {
-            	Log.d("TEMA", "KEY: " + data2[i]);
-            	Log.d("TEMA", "VALUE: " + data2[i+1]);            	
+            	Log.d("TEMA", "KEY: " + data[i]);
+            	Log.d("TEMA", "VALUE: " + data[i+1]);            	
             	valuesData.put("indice", String.valueOf(row_id));
-            	valuesData.put("key", data2[i]);
-            	valuesData.put("value", data2[i+1]);
+            	valuesData.put("key", data[i]);
+            	valuesData.put("value", data[i+1]);
             	db.insert("http_string", null, valuesData);
             }
             

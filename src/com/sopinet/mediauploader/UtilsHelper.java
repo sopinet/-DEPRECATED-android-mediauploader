@@ -137,9 +137,9 @@ public class UtilsHelper
   public static String isOnlineTEXT(Context act) {
 	  //Log.d("TEMA", MediaUploader.MODE);
 	  if (UtilsHelper.isOnline3G(act) && MediaUploader.MODE.equals("wifi")) {
-		  return "La subida se efectuará automáticamente cuando disponga de conexión Wifi.";
+		  return act.getResources().getString(MediaUploader.TEXT_UPLOADWIFI);
 	  } else {
-		  return "No hay conexión a Internet, se enviará cuando la haya.";
+		  return act.getResources().getString(MediaUploader.TEXT_NONETWORK);
 	  }
   }
   
