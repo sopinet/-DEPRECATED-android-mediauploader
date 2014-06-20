@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MediaUploader</string>
+	<string name="sending">Enviando</string>
+	<string name="uploadwifi">La subida se efectuará automáticamente cuando disponga de conexión Wifi.</string>
+	<string name="nonetwork">No hay conexión a Internet, se enviará cuando la haya.</string>
+	<string name="sendok">Envío realizado con éxito.</string>
+	<string name="senderror">Ha ocurrido un error, no se ha podido procesar su envío.</string>
+</resources>
